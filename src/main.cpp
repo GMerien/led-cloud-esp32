@@ -1,9 +1,30 @@
 #include <Arduino.h>
+#include <Adafruit_NeoPixel.h>
+
+#include "cloud_values.h"
+
+#include "cloud.h"
+#include "animation.h"
+#include "./animations/test_anim.h"
+
+Cloud cloud(20);
+
+unsigned long last_cloud_refresh_time = 0;
 
 void setup() {
-  // put your setup code here, to run once:
+  Animation* anim = new TestAnim();
+
+  cloud.setAnimation(anim);
+  cloud.setLightOn();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  // If the delay since last frame is the required delay, compute the next frame
+  if ( (millis() - last_cloud_refresh_time) > FPS_DELAY) {
+        last_cloud_refresh_time = millis();
+
+        cloud.nextFrame();
+  }
+
+  cloud.showFrame();
 }
